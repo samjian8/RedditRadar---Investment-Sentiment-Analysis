@@ -10,9 +10,7 @@ reddit = praw.Reddit(
     user_agent=os.getenv("USER_AGENT"),
 )
 
-
 def fetch_posts(subreddit: str, category: str, limit=10):
-
     # Category can be one of the following: new, hot, top, rising, controversial, gilded
     submissions = []
     for submission in getattr(reddit.subreddit(subreddit), category)(limit=limit):
@@ -27,10 +25,14 @@ def fetch_posts(subreddit: str, category: str, limit=10):
         })
     return submissions
 
-submissions = fetch_posts("tifu", "new", 10)
-for submission in submissions:
-    title = submission["title"]
-    selftext = submission["selftext"]
-    print(title)
-    print(selftext)
-    print("-" * 100)
+def test_connection():
+    submissions = fetch_posts("test", "new", 10)
+    for submission in submissions:
+        title = submission["title"]
+        selftext = submission["selftext"]
+        print(title)
+        print(selftext)
+        print("-" * 100)
+
+# Test it
+test_connection()
