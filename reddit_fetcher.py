@@ -21,7 +21,8 @@ def fetch_posts(subreddit: str, category: str, limit=10):
             "created_utc": submission.created_utc,
             "url": submission.url,
             "upvote_ratio": submission.upvote_ratio,
-            "selftext": submission.selftext
+            "selftext": submission.selftext,
+            "comments": submission.comments
         })
     return submissions
 
@@ -30,9 +31,11 @@ def test_connection():
     for submission in submissions:
         title = submission["title"]
         selftext = submission["selftext"]
+        comments = submission["comments"]
         print(title)
         print(selftext)
         print("-" * 100)
+        print(comments)
 
 # Test it
 test_connection()
