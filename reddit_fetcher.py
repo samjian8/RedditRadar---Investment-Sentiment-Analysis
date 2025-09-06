@@ -12,30 +12,34 @@ reddit = praw.Reddit(
 
 def fetch_posts(subreddit: str, category: str, limit=10):
     # Category can be one of the following: new, hot, top, rising, controversial, gilded
-    submissions = []
-    for submission in getattr(reddit.subreddit(subreddit), category)(limit=limit):
-        submissions.append({
-            "title": submission.title,
-            "score": submission.score,
-            "num_comments": submission.num_comments,
-            "created_utc": submission.created_utc,
-            "url": submission.url,
-            "upvote_ratio": submission.upvote_ratio,
-            "selftext": submission.selftext,
-            "comments": submission.comments
-        })
-    return submissions
+    try:
+        submissions = []
+        for submission in getattr(reddit.subreddit(subreddit), category)(limit=limit):
+            submissions.append({
+                "title": submission.title,
+                "score": submission.score,
+                "num_comments": submission.num_comments,
+                "created_utc": submission.created_utc,
+                "url": submission.url,
+                "upvote_ratio": submission.upvote_ratio,
+                "selftext": submission.selftext,
+                "comments": submission.comments
+            })
+        return submissions
+    except: Exception ("Error fetching posts")
 
 def test_connection():
-    submissions = fetch_posts("test", "new", 10)
-    for submission in submissions:
-        title = submission["title"]
-        selftext = submission["selftext"]
-        comments = submission["comments"]
-        print(title)
-        print(selftext)
-        print("-" * 100)
-        print(comments)
+    try:
+        submissions = fetch_posts("test", "new", 10)
+        for submission in submissions:
+            title = submission["title"]
+            selftext = submission["selftext"]
+            comments = submission["comments"]
+            print(title)
+            print(selftext)
+            print("-" * 100)
+            print(comments)
+    except Exception:("Error connecting to reddit. Check credentials and reddit server status.")
 
 # Test it
 test_connection()
