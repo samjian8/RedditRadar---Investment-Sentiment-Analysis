@@ -23,7 +23,6 @@ def fetch_posts(subreddit: str, category: str, limit=10):
                 "url": submission.url,
                 "upvote_ratio": submission.upvote_ratio,
                 "selftext": submission.selftext,
-                "comments": submission.comments
             })
         return submissions
     except: Exception ("Error fetching posts")
