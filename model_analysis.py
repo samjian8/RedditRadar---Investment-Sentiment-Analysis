@@ -9,6 +9,15 @@ import emoji
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 
 classifier = pipeline(task="sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
-data1 = ["happy happy happy", "I hate you"]
-res = classifier(data1)
-print(res)
+
+def analyze_posts(clean_posts):
+    sentiments = classifier(clean_posts)
+    return [
+        {
+            "text": text,
+            "sentiment_label": sent["label"],
+            "sentiment_score": sent["score"]
+        }
+        for text, sent in zip(clean_posts, sentiments)
+    ]
+
