@@ -25,7 +25,9 @@ def fetch_posts(subreddit: str, category: str, limit=10):
                 "selftext": submission.selftext,
             })
         return submissions
-    except Exception: ("Error fetching posts")
+    except Exception as e:
+        print(f"Error fetching posts: {e}")
+        return []
 
 def test_connection():
     try:
