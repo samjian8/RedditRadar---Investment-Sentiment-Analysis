@@ -39,6 +39,3 @@ def test_connection():
             print("-" * 100)
             print(comments)
     except Exception:("Error connecting to reddit. Check credentials and reddit server status.")
-
-# Test it
-test_connection()

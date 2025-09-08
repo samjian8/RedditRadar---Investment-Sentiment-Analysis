@@ -2,6 +2,7 @@ import reddit_fetcher
 import data_cleaner
 import model_analysis
 
+
 subreddit = input("Enter subreddit name:")
 category = input("Please enter one of gilded, new, hot, top, rising, controversial: ")
 limit = input("Number of posts: ")
