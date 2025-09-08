@@ -35,7 +35,7 @@ def analyze_posts(clean_posts: List[Dict[str, str]]) -> List[Dict[str, Union[str
                 'title': 'GME rocks!',
                 'url': 'reddit.com/...',
                 'text': 'GME rocks! Great stock',
-                'sentiment_label': 'LABEL_2', 
+                'sentiment_label': 'postive', 
                 'sentiment_score': 0.9998
             }
         ]
