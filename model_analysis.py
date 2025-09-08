@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional, Literal, Tuple, Union
 import re
 import logging
-
+import time
 # Hugging Face transformers
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 
@@ -42,8 +42,11 @@ def analyze_posts(clean_posts: List[Dict[str, str]]) -> List[Dict[str, Union[str
     """
     # Extract just the text for sentiment analysis
     texts = [post["text"] for post in clean_posts]
+
+    start_time = time.time()
     sentiments = classifier(texts)  # Batch process all texts at once
-    
+    inference_time = time.time() - start_time
+    print(f"Sentiment analysis completed in {inference_time:.2f} seconds for {len(texts)} posts.")
     # Combine original post data with sentiment results
     return [
         {
