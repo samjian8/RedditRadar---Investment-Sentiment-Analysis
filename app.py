@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 import reddit_fetcher
 import data_cleaner 
 import model_analysis
+import sentiment_utils
 
 app = Flask(__name__)
 
@@ -18,11 +19,38 @@ def analyze():
     if not subreddit or not category or not limit:
         return jsonify({"error": "Please provide subreddit, category, and limit"}), 400
 
-    raw_data = reddit_fetcher.fetch_posts(subreddit, category, limit)
-    clean_posts = data_cleaner.extract_text(raw_data)
-    texts_with_sentiment = model_analysis.analyze_posts(clean_posts)
+    try:
+        raw_data = reddit_fetcher.fetch_posts(subreddit, category, limit)
+        clean_posts = data_cleaner.extract_text(raw_data)
+        texts_with_sentiment = model_analysis.analyze_posts(clean_posts)
 
-    return jsonify(texts_with_sentiment)
+        # Get most confidently positive and negative posts
+        most_positive = sentiment_utils.get_most_positive_posts(texts_with_sentiment, top_n=5)
+        most_negative = sentiment_utils.get_most_negative_posts(texts_with_sentiment, top_n=5)
+
+        # Create summary stats
+        positive_count = len([post for post in texts_with_sentiment if post['sentiment_label'].lower() == 'positive'])
+        negative_count = len([post for post in texts_with_sentiment if post['sentiment_label'].lower() == 'negative'])
+        neutral_count = len([post for post in texts_with_sentiment if post['sentiment_label'].lower() == 'neutral'])
+
+        return jsonify({
+            'all_posts': texts_with_sentiment,
+            'highlights': {
+                'most_positive': most_positive,
+                'most_negative': most_negative
+            },
+            'summary': {
+                'total_posts': len(texts_with_sentiment),
+                'positive_count': positive_count,
+                'negative_count': negative_count,
+                'neutral_count': neutral_count
+            },
+            'subreddit': subreddit,
+            'category': category
+        })
+    
+    except Exception as e:
+        return jsonify({"Error": f"Analysis failed: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
