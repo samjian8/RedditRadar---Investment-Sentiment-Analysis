@@ -17,7 +17,7 @@ def analyze():
     limit = request.form.get('limit', type=int)
 
     if not subreddit or not category or not limit:
-        return jsonify({"error": "Please provide subreddit, category, and limit"}), 400
+        return jsonify({"Error": "Please provide subreddit, category, and limit"}), 400
 
     try:
         raw_data = reddit_fetcher.fetch_posts(subreddit, category, limit)
@@ -33,6 +33,10 @@ def analyze():
         negative_count = len([post for post in texts_with_sentiment if post['sentiment_label'].lower() == 'negative'])
         neutral_count = len([post for post in texts_with_sentiment if post['sentiment_label'].lower() == 'neutral'])
 
+        # Calculate overall sentiment (two methods)
+        overall_sentiment_weighted = sentiment_utils.calculate_overall_sentiment_weighted(texts_with_sentiment)
+        overall_sentiment_percentage = sentiment_utils.calculate_overall_sentiment_percentage(texts_with_sentiment)
+
         return jsonify({
             'all_posts': texts_with_sentiment,
             'highlights': {
@@ -46,7 +50,11 @@ def analyze():
                 'neutral_count': neutral_count
             },
             'subreddit': subreddit,
-            'category': category
+            'category': category,
+            'overall_sentiment': {
+                'weighted': overall_sentiment_weighted,
+                'percentage': overall_sentiment_percentage
+            }
         })
     
     except Exception as e:

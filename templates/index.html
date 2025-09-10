@@ -108,12 +108,89 @@
             formData.append('limit', limit.value)
 
             fetch('/analyze', {
-                method: 'POST',
-                body: formData
-            })
-            .then(function(response) {
-                return response.json();
-            })
+    method: 'POST',
+    body: formData
+})
+.then(function(response) {
+    return response.json();
+})
+.then(function(data) {
+    // Hide loading, show results
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+    
+    // Create HTML for the results
+    const resultsContent = document.getElementById('resultsContent');
+    resultsContent.innerHTML = `
+        <!-- Overall Sentiment Section -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>📊 Percentage-Based Sentiment</h5>
+                <div class="alert alert-info">
+                    <strong>${data.overall_sentiment.percentage.sentiment}</strong><br>
+                    🟢 Positive: ${data.overall_sentiment.percentage.positive_percentage}%<br>
+                    🔴 Negative: ${data.overall_sentiment.percentage.negative_percentage}%<br>
+                    ⚪ Neutral: ${data.overall_sentiment.percentage.neutral_percentage}%
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>⚖️ Weighted Sentiment</h5>
+                <div class="alert alert-secondary">
+                    <strong>${data.overall_sentiment.weighted[0]}</strong><br>
+                    Score: ${data.overall_sentiment.weighted[1].toFixed(3)}
+                </div>
+            </div>
+        </div>
+
+        <!-- Most Positive Posts -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5>📈 Most Positive Posts</h5>
+                <ul class="list-group">
+                    ${data.highlights.most_positive.map(post => `
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div>
+                                <a href="${post.url}" target="_blank" class="text-decoration-none">
+                                    ${post.title}
+                                </a>
+                            </div>
+                            <span class="badge bg-success rounded-pill">
+                                ${post.sentiment_score.toFixed(3)}
+                            </span>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Most Negative Posts -->
+        <div class="row">
+            <div class="col-12">
+                <h5>📉 Most Negative Posts</h5>
+                <ul class="list-group">
+                    ${data.highlights.most_negative.map(post => `
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div>
+                                <a href="${post.url}" target="_blank" class="text-decoration-none">
+                                    ${post.title}
+                                </a>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">
+                                ${post.sentiment_score.toFixed(3)}
+                            </span>
+                        </li>
+                    `).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
+})
+.catch(function(error) {
+    console.error('Error:', error);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+    document.getElementById('errorMessage').textContent = 'Failed to analyze posts. Please try again.';
+});
         })
     </script>
 </body>
