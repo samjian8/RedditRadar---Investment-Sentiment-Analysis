@@ -35,12 +35,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-`.env` example:
-```
-CLIENT_ID=...
-CLIENT_SECRET=...
-USER_AGENT=reddit-sentiment-analyzer/0.1 by u/<username>
-```
+`.env` example available as "example.env"
 
 ## Usage
 CLI:
