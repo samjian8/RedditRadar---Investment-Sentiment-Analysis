@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, jsonify
-import reddit_fetcher
-import data_cleaner 
-import model_analysis
-import sentiment_utils
+from src.data import reddit_fetcher, data_cleaner
+from src.models import model_analysis
+from src.utils import sentiment_utils
 
 app = Flask(__name__)
 

@@ -1,6 +1,5 @@
-import reddit_fetcher
-import data_cleaner
-import model_analysis
+from src.data import reddit_fetcher, data_cleaner
+from src.models import model_analysis
 import time
 
 

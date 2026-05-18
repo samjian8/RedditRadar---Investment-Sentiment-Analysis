@@ -14,13 +14,19 @@ The goal was to summarize community sentiment around financial instruments (stoc
 
 ## Structure
 ```
-app.py            # Flask web app & /analyze endpoint
-cli.py            # Interactive CLI
-reddit_fetcher.py # PRAW integration
-data_cleaner.py   # Text normalization
-model_analysis.py # Sentiment pipeline
-sentiment_utils.py# Aggregation logic
-templates/        # HTML template
+cli.py                       # Interactive CLI entrypoint
+src/
+  data/
+    reddit_fetcher.py        # PRAW integration
+    data_cleaner.py          # Text normalization
+  models/
+    model_analysis.py        # Sentiment pipeline
+  utils/
+    sentiment_utils.py       # Aggregation logic
+web/
+  app.py                     # Flask web app & /analyze endpoint
+  templates/
+    index.html               # HTML template
 ```
 
 ## Setup
@@ -43,9 +49,9 @@ CLI:
 python cli.py
 ```
 
-Web server:
+Web server (run from project root):
 ```bash
-python app.py
+python -m web.app
 # visit http://127.0.0.1:5000
 ```
 
