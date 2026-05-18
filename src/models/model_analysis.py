@@ -14,11 +14,8 @@ classifier = pipeline(
 
 def analyze_posts(clean_posts: List[Dict[str, str]]) -> List[Dict[str, Union[str, float]]]:
     """
-    Analyze sentiment of cleaned Reddit posts using a pre-trained transformer model.
-    
-    Uses batch processing for efficiency with cardiffnlp/twitter-roberta-base-sentiment-latest
-    model, which is optimized for social media text.
-    
+    Analyze sentiment of cleaned Reddit posts using ProsusAI/finbert.
+
     Args:
         clean_posts: List of dictionaries with 'text', 'title', 'url' keys
         Each dict should contain cleaned text ready for analysis
