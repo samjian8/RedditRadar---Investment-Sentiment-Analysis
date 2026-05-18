@@ -6,8 +6,8 @@ import time
 from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
 
 classifier = pipeline(
-    task="sentiment-analysis", 
-    model="cardiffnlp/twitter-roberta-base-sentiment-latest",
+    task="sentiment-analysis",
+    model="ProsusAI/finbert",
     truncation=True,
     max_length=512
 )

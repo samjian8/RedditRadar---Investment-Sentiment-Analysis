@@ -8,7 +8,7 @@ The goal was to summarize community sentiment around financial instruments (stoc
 ## Features (Brief)
 - Fetch posts by category (hot, new, top, rising, controversial, gilded)
 - Clean & combine title + body (URL removal, whitespace normalization, length cap)
-- Batch sentiment with `cardiffnlp/twitter-roberta-base-sentiment-latest`
+- Batch sentiment with `ProsusAI/finbert` (selected via the benchmark below)
 - Two overall signals: weighted score + percentage distribution
 - Highlights: top positive / negative posts by confidence
 
@@ -61,6 +61,19 @@ python -m web.app
   - > +0.15 => Bullish, < -0.15 => Bearish, else Mixed
 - Percentage method compares positive vs negative share
 
+## Benchmark Evaluation
+The sentiment pipeline was evaluated against the **FinancialPhraseBank** (Malo et al., 2014) `sentences_allagree` split (N=2264) using the in-repo preprocessing. Three models were compared, picked to span different training domains relative to the Reddit production input:
+
+| Model | Training domain | Accuracy | Macro-F1 |
+|-------|-----------------|----------|----------|
+| `cardiffnlp/twitter-roberta-base-sentiment-latest` | general social media | 0.7147 | 0.5750 |
+| **`ProsusAI/finbert`** (current default) | formal financial news | **0.9717** | **0.9625** |
+| `zhayunduo/roberta-base-stocktwits-finetuned` | financial social media (binary) | 0.3847 | 0.4006 |
+
+Each model fails differently. The Twitter-trained model collapses understated finance phrasing into `neutral` (under-claims sentiment). FinBERT is in-distribution on this benchmark and rarely errs. The StockTwits-finetuned model is binary (`Positive` / `Negative`); after threshold-mapping low-confidence predictions to neutral, it over-claims sentiment on neutral news prose — the mirror image of the Twitter model. FinancialPhraseBank tests only formal financial news, so it favors FinBERT by construction and does not settle which model is best for Reddit. **FinBERT remains the production default** because it is the only model of the three that this benchmark can fairly evaluate, and switching to a model that scores far worse on the one signal available is hard to justify without a Reddit-labeled measurement (may hand-label a dataset in the future for further testing and tuning).
+
+Reproduce with `python -m src.eval.evaluate_phrasebank`. Full per-class metrics, confusion matrices, failure-mode analysis, and limitations: [EVALUATION.md](EVALUATION.md).
+
 ## Troubleshooting
 | Problem | Suggestion |
 | ------- | ---------- |
@@ -73,6 +86,7 @@ python -m web.app
 - Add tests
 - Dockerize
 - Comment sentiment
+- Hand-label Reddit dataset
 - Model tuning
 
 ## Disclaimer
